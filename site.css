@@ -1,24 +1,24 @@
 :root {
-  --ink: #0c1222;
-  --deep: #0c1222;
-  --slate: #1a2438;
-  --muted: #5c677a;
-  --line: rgba(12, 18, 34, 0.1);
-  --surface: #eef2f6;
-  --panel: #ffffff;
-  --panel-hover: #f8fafb;
+  --ink: #14171f;
+  --deep: #14171f;
+  --slate: #2a3140;
+  --muted: #5e6573;
+  --line: rgba(20, 23, 31, 0.1);
+  --surface: #f1ece4;
+  --panel: #fbf8f3;
+  --panel-hover: #f3eee6;
   --white: #ffffff;
-  --accent: #0d8f7b;
-  --accent-dark: #0a6f60;
-  --signal: #e85d04;
-  --glow: rgba(13, 143, 123, 0.18);
-  --nav-bg: rgba(238, 242, 246, 0.88);
-  --lang-bg: rgba(255, 255, 255, 0.7);
-  --shadow: rgba(12, 18, 34, 0.06);
-  --hero-base: linear-gradient(165deg, #e8edf3 0%, #f5f7fa 45%, #e6ecef 100%);
-  --cta-base: linear-gradient(180deg, var(--surface), #e4eaef);
-  --page-hero-base: linear-gradient(180deg, #e8edf3, var(--surface));
-  --resume-hero-base: linear-gradient(165deg, #e8edf3 0%, #f5f7fa 50%, #e6ecef 100%);
+  --accent: #0b8a78;
+  --accent-dark: #087062;
+  --signal: #e24a1b;
+  --glow: rgba(11, 138, 120, 0.22);
+  --nav-bg: rgba(241, 236, 228, 0.9);
+  --lang-bg: rgba(255, 255, 255, 0.72);
+  --shadow: rgba(20, 23, 31, 0.08);
+  --hero-base: linear-gradient(165deg, #ece6dc 0%, #f6f2eb 48%, #e4ebe8 100%);
+  --cta-base: linear-gradient(180deg, var(--surface), #e6e0d6);
+  --page-hero-base: linear-gradient(180deg, #ece6dc, var(--surface));
+  --resume-hero-base: linear-gradient(165deg, #ece6dc 0%, #f6f2eb 50%, #e4ebe8 100%);
   --noise-opacity: 0.35;
   --font-display: "Syne", sans-serif;
   --font-brand: "Lexend", sans-serif;
@@ -29,24 +29,24 @@
 }
 
 html[data-theme="dark"] {
-  --ink: #e8eef8;
-  --deep: #070b12;
-  --slate: #c5cede;
-  --muted: #939cb0;
-  --line: rgba(232, 238, 248, 0.12);
-  --surface: #0a0f18;
-  --panel: #121a28;
-  --panel-hover: #182234;
-  --accent: #2ec4ae;
-  --accent-dark: #25a894;
-  --glow: rgba(46, 196, 174, 0.22);
-  --nav-bg: rgba(10, 15, 24, 0.9);
+  --ink: #ece7de;
+  --deep: #0b0d12;
+  --slate: #c9c3b8;
+  --muted: #9a948a;
+  --line: rgba(236, 231, 222, 0.12);
+  --surface: #0d1016;
+  --panel: #161b24;
+  --panel-hover: #1d2430;
+  --accent: #3dceb8;
+  --accent-dark: #2eb09c;
+  --glow: rgba(61, 206, 184, 0.22);
+  --nav-bg: rgba(13, 16, 22, 0.92);
   --lang-bg: rgba(255, 255, 255, 0.06);
-  --shadow: rgba(0, 0, 0, 0.35);
-  --hero-base: linear-gradient(165deg, #0a101c 0%, #0f1624 45%, #0c1420 100%);
-  --cta-base: linear-gradient(180deg, var(--surface), #0d1420);
-  --page-hero-base: linear-gradient(180deg, #0c1420, var(--surface));
-  --resume-hero-base: linear-gradient(165deg, #0a101c 0%, #0f1624 50%, #0c1420 100%);
+  --shadow: rgba(0, 0, 0, 0.4);
+  --hero-base: linear-gradient(165deg, #0c1018 0%, #121820 48%, #0e1614 100%);
+  --cta-base: linear-gradient(180deg, var(--surface), #12161e);
+  --page-hero-base: linear-gradient(180deg, #12161e, var(--surface));
+  --resume-hero-base: linear-gradient(165deg, #0c1018 0%, #121820 50%, #0e1614 100%);
   --noise-opacity: 0.22;
   color-scheme: dark;
 }
@@ -331,6 +331,11 @@ html[data-theme="dark"] .lang-switch a.is-active {
 }
 
 .btn:hover { transform: translateY(-2px); }
+
+.btn-lg {
+  padding: 18px 32px;
+  font-size: 1.02rem;
+}
 
 .btn-primary {
   background: var(--accent);
@@ -1597,148 +1602,162 @@ html[data-theme="dark"] .project-results span {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* ── Personal Software home ─────────────────── */
+/* ── Studio home: Personal Software for Business ── */
 .page-home {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
-.page-home main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.ps-hero {
+.studio-hero {
   position: relative;
-  flex: 1;
-  min-height: 100dvh;
+  min-height: 88dvh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   overflow: hidden;
-  padding: 120px 0 88px;
+  padding: 140px 0 72px;
   background:
-    radial-gradient(ellipse 70% 55% at 78% 28%, var(--glow), transparent 58%),
-    radial-gradient(ellipse 45% 40% at 8% 88%, rgba(232, 93, 4, 0.1), transparent 55%),
+    radial-gradient(ellipse 70% 55% at 82% 18%, var(--glow), transparent 58%),
+    radial-gradient(ellipse 40% 40% at 6% 90%, rgba(226, 74, 27, 0.1), transparent 52%),
     var(--hero-base);
 }
 
-.ps-hero-plane {
+.studio-hero-mark {
   position: absolute;
-  inset: 0;
+  right: -6%;
+  top: 42%;
+  width: min(58vw, 640px);
   pointer-events: none;
-  overflow: hidden;
+  opacity: 0.09;
+  transform: translateY(-50%);
 }
 
-.ps-hero-mark {
-  position: absolute;
-  right: -8%;
-  top: 50%;
-  width: min(62vw, 720px);
+.studio-hero-mark img {
+  width: 100%;
   height: auto;
-  transform: translateY(-52%);
-  opacity: 0.1;
-  filter: none;
-  user-select: none;
-  animation: ps-mark-in 1.4s ease both;
 }
 
-html[data-theme="dark"] .ps-hero-mark {
-  opacity: 0.16;
+html[data-theme="dark"] .studio-hero-mark {
+  opacity: 0.14;
   filter: invert(1);
 }
 
-.ps-hero-inner {
+.studio-hero-inner {
   position: relative;
   z-index: 1;
-  width: min(100% - 40px, var(--max));
-  margin-inline: auto;
-  max-width: 34rem;
 }
 
-.ps-kicker {
+.studio-kicker {
   font-family: var(--font-brand);
-  font-weight: 800;
-  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 18px;
 }
 
-.ps-title {
+.studio-title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3rem, 9vw, 5.6rem);
+  font-size: clamp(2.8rem, 8vw, 5.4rem);
   letter-spacing: -0.05em;
-  line-height: 0.95;
+  line-height: 0.94;
   color: var(--ink);
   margin-bottom: 22px;
-  max-width: 10ch;
+  max-width: 12ch;
 }
 
-.ps-sub {
-  font-size: clamp(1.05rem, 2vw, 1.2rem);
+.studio-lead {
+  font-size: clamp(1.08rem, 2vw, 1.25rem);
   line-height: 1.5;
   color: var(--muted);
-  max-width: 34ch;
-  margin-bottom: 36px;
+  max-width: 38ch;
+  margin-bottom: 32px;
 }
 
-.ps-actions {
+.studio-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-bottom: 18px;
 }
 
-.ps-rise {
-  animation: rise 0.85s ease both;
+.studio-note {
+  font-size: 0.88rem;
+  color: var(--muted);
 }
 
-.ps-kicker.ps-rise { animation-delay: 0.05s; }
-.ps-title.ps-rise { animation-delay: 0.14s; }
-.ps-sub.ps-rise { animation-delay: 0.26s; }
-.ps-actions.ps-rise { animation-delay: 0.38s; }
-
-@keyframes ps-mark-in {
-  from { opacity: 0; transform: translateY(-48%) scale(0.96); }
-  to { opacity: 0.1; transform: translateY(-52%) scale(1); }
+.studio-grid,
+.studio-process {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 40px;
 }
 
-html[data-theme="dark"] .ps-hero-mark {
-  animation-name: ps-mark-in-dark;
+.studio-card,
+.studio-step {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 28px 24px;
 }
 
-@keyframes ps-mark-in-dark {
-  from { opacity: 0; transform: translateY(-48%) scale(0.96); }
-  to { opacity: 0.16; transform: translateY(-52%) scale(1); }
+.studio-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  margin-bottom: 14px;
 }
 
-.site-footer--slim {
-  margin-top: auto;
+.studio-card h3,
+.studio-step h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
 }
 
-@media (max-width: 700px) {
-  .ps-hero {
-    align-items: flex-end;
-    padding-bottom: 56px;
+.studio-card p,
+.studio-step p {
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.studio-steps {
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.studio-cta .section-title {
+  margin-inline: auto;
+}
+
+.studio-cta .section-lead {
+  margin-inline: auto;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 900px) {
+  .studio-grid,
+  .studio-process {
+    grid-template-columns: 1fr;
   }
 
-  .ps-hero-mark {
-    right: -28%;
-    top: 18%;
-    width: 110vw;
+  .studio-hero {
+    min-height: auto;
+    padding: 120px 0 56px;
+  }
+
+  .studio-hero-mark {
+    right: -30%;
+    top: 12%;
+    width: 95vw;
     transform: none;
-    opacity: 0.08;
-    animation: none;
-  }
-
-  html[data-theme="dark"] .ps-hero-mark {
-    opacity: 0.12;
-    animation: none;
-  }
-
-  .ps-title {
-    max-width: 8ch;
+    opacity: 0.07;
   }
 }
