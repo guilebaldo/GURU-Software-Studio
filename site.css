@@ -1596,3 +1596,149 @@ html[data-theme="dark"] .hero-brand .brand-mark {
 html[data-theme="dark"] .project-results span {
   background: rgba(255, 255, 255, 0.05);
 }
+
+/* ── Personal Software home ─────────────────── */
+.page-home {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-home main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ps-hero {
+  position: relative;
+  flex: 1;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 120px 0 88px;
+  background:
+    radial-gradient(ellipse 70% 55% at 78% 28%, var(--glow), transparent 58%),
+    radial-gradient(ellipse 45% 40% at 8% 88%, rgba(232, 93, 4, 0.1), transparent 55%),
+    var(--hero-base);
+}
+
+.ps-hero-plane {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ps-hero-mark {
+  position: absolute;
+  right: -8%;
+  top: 50%;
+  width: min(62vw, 720px);
+  height: auto;
+  transform: translateY(-52%);
+  opacity: 0.1;
+  filter: none;
+  user-select: none;
+  animation: ps-mark-in 1.4s ease both;
+}
+
+html[data-theme="dark"] .ps-hero-mark {
+  opacity: 0.16;
+  filter: invert(1);
+}
+
+.ps-hero-inner {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 40px, var(--max));
+  margin-inline: auto;
+  max-width: 34rem;
+}
+
+.ps-kicker {
+  font-family: var(--font-brand);
+  font-weight: 800;
+  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+
+.ps-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 9vw, 5.6rem);
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  color: var(--ink);
+  margin-bottom: 22px;
+  max-width: 10ch;
+}
+
+.ps-sub {
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 34ch;
+  margin-bottom: 36px;
+}
+
+.ps-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ps-rise {
+  animation: rise 0.85s ease both;
+}
+
+.ps-kicker.ps-rise { animation-delay: 0.05s; }
+.ps-title.ps-rise { animation-delay: 0.14s; }
+.ps-sub.ps-rise { animation-delay: 0.26s; }
+.ps-actions.ps-rise { animation-delay: 0.38s; }
+
+@keyframes ps-mark-in {
+  from { opacity: 0; transform: translateY(-48%) scale(0.96); }
+  to { opacity: 0.1; transform: translateY(-52%) scale(1); }
+}
+
+html[data-theme="dark"] .ps-hero-mark {
+  animation-name: ps-mark-in-dark;
+}
+
+@keyframes ps-mark-in-dark {
+  from { opacity: 0; transform: translateY(-48%) scale(0.96); }
+  to { opacity: 0.16; transform: translateY(-52%) scale(1); }
+}
+
+.site-footer--slim {
+  margin-top: auto;
+}
+
+@media (max-width: 700px) {
+  .ps-hero {
+    align-items: flex-end;
+    padding-bottom: 56px;
+  }
+
+  .ps-hero-mark {
+    right: -28%;
+    top: 18%;
+    width: 110vw;
+    transform: none;
+    opacity: 0.08;
+    animation: none;
+  }
+
+  html[data-theme="dark"] .ps-hero-mark {
+    opacity: 0.12;
+    animation: none;
+  }
+
+  .ps-title {
+    max-width: 8ch;
+  }
+}
