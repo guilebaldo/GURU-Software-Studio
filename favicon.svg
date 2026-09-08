@@ -1,22 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-  <!-- Outer ring -->
-  <circle cx="50" cy="50" r="45.5" stroke="#000000" stroke-width="3.6"/>
-  <!--
-    Abstract G:
-    1) arc open on the right
-    2) vertical rise from lower terminal → forms the inner-right corner
-    3) horizontal bar into the center node
-  -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="50" fill="#f1ece4"/>
+  <circle cx="50" cy="50" r="41" fill="none" stroke="#14171f" stroke-width="7"/>
   <path
-    d="M 73.5 31.5
-       A 30 30 0 1 0 73.5 68.5
-       L 73.5 50
-       L 56 50"
-    stroke="#000000"
-    stroke-width="3.6"
+    d="M 72.5 31.5
+       A 28.5 28.5 0 1 0 72.5 68.5
+       L 72.5 50
+       L 55.5 50"
+    fill="none"
+    stroke="#14171f"
+    stroke-width="7"
     stroke-linecap="round"
     stroke-linejoin="round"
   />
-  <!-- Center node -->
-  <circle cx="50" cy="50" r="5.2" stroke="#000000" stroke-width="3.2"/>
+  <circle cx="50" cy="50" r="5.8" fill="none" stroke="#14171f" stroke-width="6"/>
 </svg>
