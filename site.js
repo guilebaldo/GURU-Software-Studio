@@ -4,14 +4,14 @@
 
   const labels = {
     en: {
-      system: "Theme: system (follows day/night). Click for light.",
-      light: "Theme: light. Click for dark.",
-      dark: "Theme: dark. Click for system.",
+      system: "Switch to system theme (follows day/night)",
+      light: "Switch to light theme",
+      dark: "Switch to dark theme",
     },
     es: {
-      system: "Tema: sistema (sigue día/noche). Clic para claro.",
-      light: "Tema: claro. Clic para oscuro.",
-      dark: "Tema: oscuro. Clic para sistema.",
+      system: "Cambiar a tema automático (sigue día/noche)",
+      light: "Cambiar a tema claro",
+      dark: "Cambiar a tema oscuro",
     },
   };
 
@@ -47,20 +47,23 @@
     return systemDark() ? "dark" : "light";
   }
 
+  function nextPref(pref) {
+    return PREFS[(PREFS.indexOf(pref) + 1) % PREFS.length];
+  }
+
   function applyTheme(pref) {
     const theme = resolveTheme(pref);
+    const upcoming = nextPref(pref);
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.setAttribute("data-theme-pref", pref);
+    document.documentElement.setAttribute("data-theme-next", upcoming);
 
     document.querySelectorAll(".theme-toggle").forEach((btn) => {
       btn.dataset.pref = pref;
-      btn.setAttribute("aria-label", labels[lang()][pref]);
-      btn.setAttribute("title", labels[lang()][pref]);
+      btn.dataset.next = upcoming;
+      btn.setAttribute("aria-label", labels[lang()][upcoming]);
+      btn.setAttribute("title", labels[lang()][upcoming]);
     });
-  }
-
-  function nextPref(pref) {
-    return PREFS[(PREFS.indexOf(pref) + 1) % PREFS.length];
   }
 
   function initThemeControls() {
@@ -86,18 +89,39 @@
     }
   }
 
+  function initNavMenu() {
+    const toggle = document.getElementById("navToggle");
+    const links = document.getElementById("navLinks");
+    if (!toggle || !links) return;
+
+    const labelOpen = toggle.dataset.labelOpen || "Open menu";
+    const labelClose = toggle.dataset.labelClose || "Close menu";
+
+    function setOpen(open) {
+      links.classList.toggle("open", open);
+      toggle.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? labelClose : labelOpen);
+    }
+
+    toggle.addEventListener("click", () => {
+      setOpen(!links.classList.contains("open"));
+    });
+
+    links.querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", () => setOpen(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const year = document.getElementById("y");
     if (year) year.textContent = new Date().getFullYear();
 
-    const toggle = document.getElementById("navToggle");
-    const links = document.getElementById("navLinks");
-    if (toggle && links) {
-      toggle.addEventListener("click", () => links.classList.toggle("open"));
-      links.querySelectorAll("a").forEach((a) => {
-        a.addEventListener("click", () => links.classList.remove("open"));
-      });
-    }
+    initNavMenu();
 
     const observer = new IntersectionObserver(
       (entries) => {

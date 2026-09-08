@@ -165,10 +165,24 @@ body::before {
   color: var(--accent);
 }
 
+.nav-tray {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: auto;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
   gap: 28px;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .nav-links a {
@@ -181,6 +195,10 @@ body::before {
 
 .nav-links a:hover,
 .nav-links a.is-active { color: var(--ink); }
+
+.lang-switch a {
+  text-decoration: none;
+}
 
 .nav-cta {
   display: inline-flex;
@@ -251,10 +269,11 @@ html[data-theme="dark"] .nav-cta:hover {
   display: none;
 }
 
-html[data-theme-pref="system"] .theme-toggle .icon-system,
-html[data-theme-pref="light"] .theme-toggle .icon-light,
-html[data-theme-pref="dark"] .theme-toggle .icon-dark,
-html:not([data-theme-pref]) .theme-toggle .icon-system {
+/* Show the next theme the button will apply on click */
+html[data-theme-next="system"] .theme-toggle .icon-system,
+html[data-theme-next="light"] .theme-toggle .icon-light,
+html[data-theme-next="dark"] .theme-toggle .icon-dark,
+html:not([data-theme-next]) .theme-toggle .icon-light {
   display: block;
 }
 
@@ -295,6 +314,7 @@ html[data-theme="dark"] .lang-switch a.is-active {
   width: 40px;
   height: 40px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .nav-toggle span,
@@ -306,12 +326,26 @@ html[data-theme="dark"] .lang-switch a.is-active {
   background: var(--ink);
   position: absolute;
   left: 10px;
-  transition: 0.2s;
+  transition: transform 0.28s ease, top 0.28s ease, opacity 0.2s ease, background 0.2s ease;
 }
 
 .nav-toggle span { top: 19px; }
 .nav-toggle span::before { content: ""; top: -6px; }
 .nav-toggle span::after { content: ""; top: 6px; }
+
+.nav-toggle.is-open span {
+  background: transparent;
+}
+
+.nav-toggle.is-open span::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.nav-toggle.is-open span::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
 
 /* Buttons */
 .btn {
@@ -1051,6 +1085,14 @@ html[data-theme="dark"] .service-tags span {
 @media (max-width: 900px) {
   .nav-toggle { display: block; }
 
+  .nav-tray {
+    gap: 8px;
+  }
+
+  .nav-controls {
+    gap: 8px;
+  }
+
   .nav-links {
     position: fixed;
     inset: 72px 0 auto 0;
@@ -1064,7 +1106,8 @@ html[data-theme="dark"] .service-tags span {
     transform: translateY(-120%);
     opacity: 0;
     pointer-events: none;
-    transition: 0.25s ease;
+    transition: transform 0.28s ease, opacity 0.28s ease;
+    z-index: 999;
   }
 
   .nav-links.open {
