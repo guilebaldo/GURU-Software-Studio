@@ -1809,3 +1809,159 @@ html[data-theme="dark"] .studio-hero-mark {
     opacity: 0.07;
   }
 }
+
+/* Diagnostic */
+.diag-hero .section-title { max-width: 14ch; }
+
+.diag-form {
+  display: grid;
+  gap: 28px;
+  max-width: 760px;
+}
+
+.diag-group-title {
+  font-family: var(--font-brand);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.diag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.diag-chip {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.diag-chip:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.diag-chip[aria-pressed="true"] {
+  border-color: var(--deep);
+  background: var(--deep);
+  color: var(--white);
+}
+
+html[data-theme="dark"] .diag-chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--deep);
+}
+
+.diag-note-label {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.diag-note-label span {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.diag-note {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.45;
+  resize: vertical;
+  min-height: 96px;
+}
+
+.diag-note:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.diag-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.diag-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.diag-summary {
+  max-width: 760px;
+  margin-top: 12px;
+  padding-top: 8px;
+}
+
+.diag-summary-list {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.diag-summary-list li {
+  position: relative;
+  padding: 14px 16px 14px 42px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.diag-summary-list li::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-50%);
+}
+
+.diag-summary-note {
+  color: var(--muted);
+  margin-bottom: 28px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.diag-summary .cta-actions {
+  margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .diag-chip {
+    width: 100%;
+  }
+}
