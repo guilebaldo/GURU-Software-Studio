@@ -1965,3 +1965,57 @@ html[data-theme="dark"] .diag-chip[aria-pressed="true"] {
     width: 100%;
   }
 }
+
+/* FAQ — GEO citeable answers */
+.studio-faq {
+  border-top: 1px solid var(--line);
+}
+
+.faq-list {
+  display: grid;
+  gap: 12px;
+  max-width: 760px;
+  margin-top: 32px;
+}
+
+.faq-item {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 0;
+}
+
+.faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-weight: 750;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  padding: 18px 52px 18px 20px;
+  position: relative;
+}
+
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::after {
+  content: "+";
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.faq-item[open] summary::after { content: "–"; }
+
+.faq-item p {
+  margin: 0;
+  padding: 0 20px 20px;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: 62ch;
+}
