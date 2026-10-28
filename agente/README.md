@@ -1,8 +1,8 @@
-# Guilebaldo agent terminal (`/agente`)
+# GURU studio terminal (home + `/agente/*` redirects)
 
-Experimental page — does not replace the main landing.
+The main landing **is** the fullscreen terminal (`/` and `/es/`). Legacy `/agente/` URLs redirect home.
 
-## Stack (v0.1)
+## Stack (v0.2)
 
 | Layer | Choice | Why |
 |--------|--------|-----|
@@ -18,7 +18,8 @@ Experimental page — does not replace the main landing.
 
 ## URLs
 
-- English: `/agente/`
-- Spanish: `/es/agente/`
+- English: `/`
+- Spanish: `/es/`
+- PWA: `/manifest.webmanifest` (Add to Home Screen)
 
-Pages use `noindex` until you are ready to promote them.
+SEO/GEO/AEO: JSON-LD + `llms.txt` + `noscript` + visually hidden landmark copy on home.

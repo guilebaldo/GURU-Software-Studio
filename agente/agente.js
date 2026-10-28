@@ -9,17 +9,32 @@
   const input = document.getElementById("agenteInput");
   const statusDot = document.getElementById("agenteStatusDot");
   const statusLabel = document.getElementById("agenteStatusLabel");
+  const promptEl = document.getElementById("agentePromptLabel");
 
+  const HANDLE_KEY = "guru-handle";
+  const BOT = "guru";
   const EMAIL = "hello@gurusoftware.studio";
   const WA = "522225772475";
   const WA_BASE = `https://wa.me/${WA}`;
 
+  const ASCII_LOGO = `  ██████╗ ██╗   ██╗██████╗ ██╗   ██╗
+ ██╔════╝ ██║   ██║██╔══██╗██║   ██║
+ ██║  ███╗██║   ██║██████╔╝██║   ██║
+ ██║   ██║██║   ██║██╔══██╗██║   ██║
+ ╚██████╔╝╚██████╔╝██║  ██║╚██████╔╝
+  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝`;
+
+  const ASCII_MARK = `    ┌───┐
+    │ G │
+    └───┘`;
+
   const copy = {
     en: {
-      prompt: "you@studio:~$",
-      boot: "session init — guilebaldo.agent v0.1",
-      greeting:
-        "Hi — I'm Guilebaldo, your next software developer.\nWhat would you like to know about GURU, custom software, or working together?",
+      boot: "guru.agent v0.2 — Personal Software for Business",
+      greeting: (name) => {
+        const hi = name ? `Hi ${name} —` : "Hi —";
+        return `${hi} I'm Guilebaldo, your next software developer.\nWhat would you like to know about GURU, custom software, or working together?`;
+      },
       placeholder: "Ask anything, or type help…",
       thinking: "…",
       offline: "local guide",
@@ -31,20 +46,22 @@
         "show portfolio",
         "contact / whatsapp / email",
         "diagnostic",
+        "logo (ASCII art)",
       ],
       contactIntro: "Fastest way to reach me:",
       emailLabel: "Email",
       waLabel: "WhatsApp",
-      waPrefill: "Hi Guilebaldo — I came from the agent terminal on gurusoftware.studio.",
+      waPrefill: "Hi GURU — I came from the studio terminal on gurusoftware.studio.",
       unknown:
-        "I'm not sure on that one in local mode. For a real conversation, connect the AI API — or write me on WhatsApp / email and we'll figure it out.",
+        "I'm not sure on that one in local mode. For a deeper answer, connect the AI API — or write me on WhatsApp / email.",
       error: "Something went wrong. You can still reach me on WhatsApp or email.",
     },
     es: {
-      prompt: "tu@studio:~$",
-      boot: "inicio de sesión — guilebaldo.agent v0.1",
-      greeting:
-        "Hola, soy Guilebaldo, tu próximo desarrollador de software.\n¿Qué te gustaría saber sobre GURU, software a la medida o cómo trabajamos?",
+      boot: "guru.agent v0.2 — Personal Software for Business",
+      greeting: (name) => {
+        const hi = name ? `Hola ${name} —` : "Hola,";
+        return `${hi} soy Guilebaldo, tu próximo desarrollador de software.\n¿Qué te gustaría saber sobre GURU, software a la medida o cómo trabajamos?`;
+      },
       placeholder: "Pregunta lo que quieras, o escribe ayuda…",
       thinking: "…",
       offline: "guía local",
@@ -60,9 +77,9 @@
       contactIntro: "La forma más rápida de hablar conmigo:",
       emailLabel: "Correo",
       waLabel: "WhatsApp",
-      waPrefill: "Hola Guilebaldo — vengo del terminal agente en gurusoftware.studio.",
+      waPrefill: "Hola GURU — vengo del terminal en gurusoftware.studio.",
       unknown:
-        "En modo local no tengo una respuesta clara para eso. Cuando conectemos la API de IA podremos profundizar — o escríbeme por WhatsApp / correo y lo vemos.",
+        "En modo local no tengo una respuesta clara. Cuando conectemos la API de IA podremos profundizar — o escríbeme por WhatsApp / correo.",
       error: "Algo falló. Igual puedes escribirme por WhatsApp o correo.",
     },
   };
@@ -72,6 +89,29 @@
   let knowledge = "";
   let busy = false;
 
+  function readHandle() {
+    try {
+      const raw = localStorage.getItem(HANDLE_KEY) || "";
+      const cleaned = raw.replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 24);
+      if (!cleaned || !/^[\p{L}\p{M}\d .'-]+$/u.test(cleaned)) return "";
+      return cleaned;
+    } catch {
+      return "";
+    }
+  }
+
+  function promptUser() {
+    const name = readHandle();
+    if (name) return `${name.split(" ")[0].toLowerCase()}@guru`;
+    return lang === "es" ? "tu@guru" : "you@guru";
+  }
+
+  function syncPrompt() {
+    const label = `${promptUser()}:~$`;
+    if (promptEl) promptEl.textContent = label;
+    if (input) input.setAttribute("aria-describedby", "agentePromptLabel");
+  }
+
   function waLink(text) {
     return `${WA_BASE}?text=${encodeURIComponent(text)}`;
   }
@@ -79,17 +119,24 @@
   function appendLine(kind, label, text, actions) {
     const line = document.createElement("div");
     line.className = `agente-line agente-line--${kind}`;
-    const head = document.createElement("div");
-    if (label) {
-      const span = document.createElement("span");
-      span.className = "agente-label";
-      span.textContent = `${label} `;
-      head.appendChild(span);
+    if (kind === "ascii") {
+      const pre = document.createElement("pre");
+      pre.className = "agente-ascii";
+      pre.textContent = text;
+      line.appendChild(pre);
+    } else {
+      const head = document.createElement("div");
+      if (label) {
+        const span = document.createElement("span");
+        span.className = "agente-label";
+        span.textContent = `${label} `;
+        head.appendChild(span);
+      }
+      const body = document.createElement("span");
+      body.textContent = text;
+      head.appendChild(body);
+      line.appendChild(head);
     }
-    const body = document.createElement("span");
-    body.textContent = text;
-    head.appendChild(body);
-    line.appendChild(head);
 
     if (actions && actions.length) {
       const row = document.createElement("div");
@@ -123,7 +170,7 @@
     return [
       {
         label: t.emailLabel,
-        href: `mailto:${EMAIL}?subject=${encodeURIComponent("GURU — from agent terminal")}`,
+        href: `mailto:${EMAIL}?subject=${encodeURIComponent("GURU — from studio terminal")}`,
       },
       {
         label: t.waLabel,
@@ -143,17 +190,18 @@
 
   function localReply(raw) {
     const q = normalize(raw);
-    if (!q) return { text: t.helpTitle + "\n• " + t.helpItems.join("\n• ") };
+    if (!q) return { text: `${t.helpTitle}\n• ${t.helpItems.join("\n• ")}` };
 
     if (/^(help|ayuda|\?)$/.test(q)) {
       return { text: `${t.helpTitle}\n• ${t.helpItems.join("\n• ")}` };
     }
 
+    if (/^(logo|ascii|banner)$/.test(q)) {
+      return { text: ASCII_LOGO };
+    }
+
     if (/contact|correo|email|whatsapp|wa|hablar|llamar|mensaje/.test(q)) {
-      return {
-        text: t.contactIntro,
-        actions: contactActions(),
-      };
+      return { text: t.contactIntro, actions: contactActions() };
     }
 
     if (/diagnostic|diagnostico|diagnóstico/.test(q)) {
@@ -199,10 +247,7 @@
             ? "GURU Software Studio hace Personal Software for Business: software hecho para cómo opera tu negocio (cotizaciones, ops, clientes, inventario, reservas…). Primera versión usable suele salir en 4–8 semanas; tú te quedas con código y datos."
             : "GURU Software Studio builds Personal Software for Business — software shaped around how your operation runs (quoting, ops, clients, inventory, bookings…). A usable first version often ships in 4–8 weeks; you own the code and data.",
         actions: [
-          {
-            label: lang === "es" ? "Ver sitio" : "See site",
-            href: lang === "es" ? "/es/" : "/",
-          },
+          { label: lang === "es" ? "Diagnóstico" : "Diagnostic", href: lang === "es" ? "/es/diagnostico/" : "/diagnostico/" },
         ],
       };
     }
@@ -235,8 +280,8 @@
         return {
           text:
             lang === "es"
-              ? `Sobre “${raw}”: en el sitio destacamos software a la medida, diagnóstico, portafolio y contacto directo (correo / WhatsApp). ¿Quieres que te pase enlaces o prefieres escribirme?`
-              : `On “${raw}”: on the site we focus on custom software, the diagnostic, portfolio, and direct contact (email / WhatsApp). Want links, or should we talk live?`,
+              ? `Sobre “${raw}”: en el sitio destacamos software a la medida, diagnóstico, portafolio y contacto directo (correo / WhatsApp). ¿Quieres enlaces o hablamos en vivo?`
+              : `On “${raw}”: we focus on custom software, the diagnostic, portfolio, and direct contact (email / WhatsApp). Want links, or should we talk live?`,
           actions: contactActions(),
         };
       }
@@ -272,9 +317,9 @@
     if (busy) return;
     busy = true;
     input.disabled = true;
-    appendLine("user", t.prompt, text);
+    appendLine("user", `${promptUser()}:~$`, text);
 
-    appendLine("bot", "guilebaldo:", t.thinking);
+    appendLine("bot", `${BOT}:`, t.thinking);
 
     try {
       let result;
@@ -285,10 +330,14 @@
         result = localReply(text);
       }
       logEl.lastElementChild?.remove();
-      appendLine("bot", "guilebaldo:", result.text, result.actions);
+      if (result.text === ASCII_LOGO) {
+        appendLine("ascii", "", ASCII_LOGO);
+      } else {
+        appendLine("bot", `${BOT}:`, result.text, result.actions);
+      }
     } catch {
       logEl.lastElementChild?.remove();
-      appendLine("bot", "guilebaldo:", t.error, contactActions());
+      appendLine("bot", `${BOT}:`, t.error, contactActions());
     } finally {
       busy = false;
       input.disabled = false;
@@ -297,6 +346,11 @@
   }
 
   function boot() {
+    syncPrompt();
+    if (input) {
+      input.placeholder = t.placeholder;
+    }
+
     if (statusDot && statusLabel) {
       if (apiUrl) {
         statusDot.classList.remove("is-offline");
@@ -307,8 +361,11 @@
       }
     }
 
+    appendLine("ascii", "", ASCII_LOGO);
+    appendLine("system", "", `${ASCII_MARK}\nSoftware Studio · Puebla, MX`);
     appendLine("system", "", t.boot);
-    appendLine("bot", "guilebaldo:", t.greeting, contactActions());
+    const firstName = readHandle();
+    appendLine("bot", `${BOT}:`, t.greeting(firstName), contactActions());
   }
 
   form?.addEventListener("submit", (e) => {
@@ -318,6 +375,14 @@
     input.value = "";
     handleUser(text);
   });
+
+  if (input) {
+    input.addEventListener("focus", () => {
+      if (window.visualViewport) {
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+    });
+  }
 
   fetchKnowledge().then(boot);
 })();
