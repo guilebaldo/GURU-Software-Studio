@@ -2037,6 +2037,13 @@ body {
   text-wrap: pretty;
 }
 
+body.page-terminal {
+  padding-bottom: 0;
+  overflow: hidden;
+  height: 100dvh;
+  height: 100svh;
+}
+
 h1, h2, h3,
 .studio-title,
 .section-title,

@@ -2,9 +2,14 @@
 <html lang="es-MX">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GURU">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>GURU Software Studio — Personal Software for Business</title>
-  <meta name="description" content="GURU Software Studio construye Personal Software for Business en Puebla, México: software a la medida de cómo opera tu empresa. Haz el diagnóstico o agenda una llamada.">
+  <meta name="description" content="GURU Software Studio — terminal interactivo de Personal Software for Business en Puebla, México. Software a la medida de tu operación. Pregunta al agente, diagnóstico o agenda una llamada.">
   <link rel="canonical" href="https://gurusoftware.studio/es/">
   <link rel="alternate" hreflang="en" href="https://gurusoftware.studio/">
   <link rel="alternate" hreflang="es-MX" href="https://gurusoftware.studio/es/">
@@ -17,7 +22,8 @@
   <link rel="icon" href="/assets/favicon-48.png?v=mark3" type="image/png" sizes="48x48">
   <link rel="icon" href="/favicon.ico?v=mark3" sizes="any">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=mark3">
-  <link rel="stylesheet" href="/site.css?v=terminal2">
+  <link rel="stylesheet" href="/site.css?v=terminal3">
+  <link rel="stylesheet" href="/agente/agente.css?v=2">
   <script>
     (function () {
       try {
@@ -239,9 +245,12 @@
   ]
 }
   </script>
-  <!-- /SEO/GEO -->
+  <!-- /SEO/GEO/AEO -->
+  <noscript>
+    <p>GURU Software Studio construye Personal Software for Business en Puebla, México — software a la medida de cómo opera tu empresa. Contacto hello@gurusoftware.studio o WhatsApp +52 222 577 2475. Diagnóstico: gurusoftware.studio/es/diagnostico/</p>
+  </noscript>
 </head>
-<body class="page-home">
+<body class="page-home page-terminal agente-page" data-agente data-lang="es" data-api="">
 
   <header class="site-nav">
     <a class="nav-brand" href="/es/">
@@ -250,7 +259,7 @@
     </a>
     <div class="nav-tray">
       <nav class="nav-links" id="navLinks">
-      <a href="#product" class="is-active">Producto</a>
+      <a href="/es/" class="is-active">Terminal</a>
       <a href="/es/portafolio/">Trabajo</a>
       <a href="/es/diagnostico/">Diagnóstico</a>
       <a href="/es/resume/">Currículum</a>
@@ -271,113 +280,44 @@
     </div>
   </header>
 
-  <main>
-    <section class="studio-hero">
-      <div class="studio-hero-mark" aria-hidden="true">
-        <img src="/assets/guru-mark.svg?v=mark3" alt="">
-      </div>
-      <div class="wrap studio-hero-inner">
-        <p class="studio-kicker reveal">GURU Software Studio</p>
-        <h1 class="studio-title reveal">Personal Software<br>for Business</h1>
-        <p class="studio-lead reveal">Software a la medida de cómo opera tu empresa — no otro SaaS genérico. Rápido de entregar. Tuyo para siempre.</p>
-        <div class="studio-actions reveal">
-          <a class="btn btn-primary btn-lg" href="https://wa.me/522225772475?text=Hola%20GURU%20—%20quiero%20Personal%20Software%20for%20Business" target="_blank" rel="noopener">Agendar llamada por WhatsApp</a>
-          <a class="btn btn-ghost" href="/es/diagnostico/">Haz un diagnóstico rápido</a>
-        </div>
-        <p class="studio-note reveal">Respuesta típica en menos de 24 h · Puebla · Remoto en todo el mundo</p>
-      </div>
-    </section>
-
-    <section class="section studio-product" id="product">
-      <div class="wrap">
-        <div class="eyebrow reveal">El producto</div>
-        <h2 class="section-title reveal">Una sola oferta. Para operadores.</h2>
-        <p class="section-lead reveal">Personal Software for Business es un sistema a la medida de tu operación — cotizaciones, ops, clientes, inventario o el flujo que nadie más tiene resuelto.</p>
-        <div class="studio-grid">
-          <article class="studio-card reveal">
-            <div class="studio-num">01</div>
-            <h3>Hecho a tu forma</h3>
-            <p>Mapeamos cómo ya trabajas y construimos el producto más chico que quite la fricción. Sin roadmap inflado.</p>
-          </article>
-          <article class="studio-card reveal">
-            <div class="studio-num">02</div>
-            <h3>Sale en semanas</h3>
-            <p>Una primera versión usable en 4–8 semanas. Demos semanales. Ves software funcionando, no una presentación.</p>
-          </article>
-          <article class="studio-card reveal">
-            <div class="studio-num">03</div>
-            <h3>Tú eres el dueño</h3>
-            <p>Código, cuentas y datos se quedan contigo. Sin suscripción cautiva de una herramienta que no te cabe.</p>
-          </article>
+  <main id="main">
+    <div class="agente-shell agente-shell--home">
+      <div class="agente-top">
+        <span>Personal Software for Business · Puebla · Remoto</span>
+        <div class="agente-status">
+          <span class="agente-status-dot is-offline" id="agenteStatusDot" aria-hidden="true"></span>
+          <span id="agenteStatusLabel">guía local</span>
         </div>
       </div>
-    </section>
 
-    <section class="section studio-steps">
-      <div class="wrap">
-        <div class="eyebrow reveal">Cómo funciona</div>
-        <h2 class="section-title reveal">Llamada. Alcance. Lanzamiento.</h2>
-        <div class="studio-process">
-          <div class="studio-step reveal">
-            <div class="studio-num">01</div>
-            <h3>Diagnóstico rápido</h3>
-            <p>Marca lo que necesitas en 2 minutos. Te doy un resumen — la cotización la vemos en una llamada corta.</p>
+      <div class="agente-frame">
+        <div class="agente-chrome">
+          <div class="agente-chrome-title">
+            <div class="agente-chrome-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <span>guru@studio — bash — 80×24</span>
           </div>
-          <div class="studio-step reveal">
-            <div class="studio-num">02</div>
-            <h3>Alcance cerrado</h3>
-            <p>Entregables, tiempo e inversión claros. Sabes qué se lanza antes de escribir una línea de código.</p>
-          </div>
-          <div class="studio-step reveal">
-            <div class="studio-num">03</div>
-            <h3>A producción</h3>
-            <p>Lanzamos, lo operas, e iteramos en los ciclos que sí ahorran tiempo o generan ingreso.</p>
-          </div>
+          <span>gurusoftware.studio</span>
         </div>
+        <div class="agente-log" id="agenteLog" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <form class="agente-input-row" id="agenteForm">
+          <label class="agente-prompt" id="agentePromptLabel" for="agenteInput">tu@guru:~$</label>
+          <input id="agenteInput" name="message" type="text" autocomplete="off" autocapitalize="off" spellcheck="true" enterkeyhint="send" aria-label="Mensaje al agente GURU">
+        </form>
       </div>
-    </section>
+      <p class="agente-hint">Escribe <strong>ayuda</strong> · <a href="/es/diagnostico/">Diagnóstico</a> · <a href="mailto:hello@gurusoftware.studio">Correo</a> · <a href="https://wa.me/522225772475" target="_blank" rel="noopener">WhatsApp</a></p>
+    </div>
 
-
-    <section class="section studio-faq" id="faq" aria-labelledby="faq-title">
-      <div class="wrap">
-        <div class="eyebrow reveal">FAQ</div>
-        <h2 class="section-title reveal" id="faq-title">Respuestas claras para operadores.</h2>
-        <p class="section-lead reveal">Definiciones directas para que tú — y las herramientas de búsqueda — sepan exactamente qué construye GURU.</p>
-        <div class="faq-list">
-          <details class="faq-item reveal">
-            <summary>¿Qué es GURU Software Studio?</summary>
-            <p>GURU Software Studio es un studio de software en Puebla, México, que construye Personal Software for Business: herramientas a la medida de cómo ya opera una empresa, no otro SaaS genérico por suscripción.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary>¿Qué es Personal Software for Business?</summary>
-            <p>Personal Software for Business es software a la medida de una operación: cotizaciones, ops, clientes, inventario, citas, paneles o cualquier flujo que hoy se haga a mano. La primera versión usable suele salir en 4–8 semanas, y el cliente es dueño del código y los datos.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary>¿Cómo pido una cotización?</summary>
-            <p>Empieza con el diagnóstico gratis en gurusoftware.studio/es/diagnostico y agenda una llamada corta. La cotización es personal: GURU define alcance y precio contigo, sin lista automática de precios.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary>¿Desde dónde trabaja GURU?</summary>
-            <p>GURU Software Studio está en Puebla, México y atiende clientes en remoto en todo el mundo. Contacto: hello@gurusoftware.studio o WhatsApp.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta-band studio-cta" id="start">
-      <div class="wrap reveal">
-        <div class="eyebrow" style="justify-content:center">Empieza aquí</div>
-        <h2 class="section-title">¿Tienes un flujo que ya debería ser software?</h2>
-        <p class="section-lead">Escríbeme por WhatsApp. Te doy un siguiente paso claro — normalmente una llamada corta de alcance.</p>
-        <div class="cta-actions">
-          <a class="btn btn-primary btn-lg" href="/es/diagnostico/">Haz un diagnóstico rápido</a>
-          <a class="btn btn-dark" href="https://wa.me/522225772475?text=Hola%20GURU%20—%20quiero%20Personal%20Software%20for%20Business" target="_blank" rel="noopener">WhatsApp · Agendar llamada</a>
-        </div>
-      </div>
+    <section class="seo-landmark" aria-label="Acerca de GURU Software Studio">
+      <h1>GURU Software Studio — Personal Software for Business</h1>
+      <p>Software a la medida de cómo opera tu empresa. Puebla, México. Remoto en todo el mundo.</p>
+      <h2>¿Qué es Personal Software for Business?</h2>
+      <p>Software a la medida de una operación — cotizaciones, ops, clientes, inventario, citas — normalmente en 4–8 semanas; tú eres dueño del código y los datos.</p>
+      <h2>Contacto</h2>
+      <p>hello@gurusoftware.studio · WhatsApp +52 222 577 2475 · Diagnóstico en /es/diagnostico/</p>
     </section>
   </main>
 
-  <footer class="site-footer">
+  <footer class="site-footer site-footer--terminal">
     <a class="brand" href="/es/">GURU<img class="brand-mark" src="/assets/guru-mark.svg?v=mark3" alt="" width="16" height="16"></a>
     <nav>
       <a href="/es/portafolio/">Trabajo</a>
@@ -389,6 +329,7 @@
     <span>© <span id="y"></span> GURU Software Studio</span>
   </footer>
 
-  <script src="/site.js?v=terminal2"></script>
+  <script src="/site.js?v=terminal3"></script>
+  <script src="/agente/agente.js?v=2"></script>
 </body>
 </html>

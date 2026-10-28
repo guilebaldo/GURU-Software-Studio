@@ -25,10 +25,8 @@ Personal Software for Business is custom software for a specific operation — q
 3. Fixed scope, weekly demos, go live
 
 ## Key pages
-- Home (EN): https://gurusoftware.studio/
-- Home (ES): https://gurusoftware.studio/es/
-- Agent terminal (EN, experimental): https://gurusoftware.studio/agente/
-- Terminal agente (ES, experimental): https://gurusoftware.studio/es/agente/
+- Home / studio terminal (EN): https://gurusoftware.studio/
+- Inicio / terminal del estudio (ES): https://gurusoftware.studio/es/
 - Diagnostic (EN): https://gurusoftware.studio/diagnostico/
 - Diagnostic (ES): https://gurusoftware.studio/es/diagnostico/
 - Work / Portfolio (EN): https://gurusoftware.studio/portafolio/

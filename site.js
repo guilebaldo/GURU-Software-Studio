@@ -252,12 +252,21 @@
     requestAnimationFrame(frame);
   }
 
-  function initTerminal() {
+  function initMatrixRain() {
+    if (document.querySelector(".matrix-rain")) return;
+    if (!document.body.classList.contains("page-terminal")) return;
     const rain = document.createElement("canvas");
     rain.className = "matrix-rain";
     rain.setAttribute("aria-hidden", "true");
     document.body.prepend(rain);
     initRain(rain);
+  }
+
+  function initTerminal() {
+    if (document.querySelector("[data-agente]")) return;
+
+    initMatrixRain();
+    if (!document.body.classList.contains("page-terminal")) return;
 
     const t = text();
     const boot = document.createElement("div");
@@ -407,6 +416,7 @@
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
 
     initThemeControls();
+    initMatrixRain();
     initTerminal();
 
     const themeMeta = document.querySelector('meta[name="theme-color"]');
