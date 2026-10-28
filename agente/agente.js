@@ -73,6 +73,7 @@
         "portafolio",
         "contacto / whatsapp / correo",
         "diagnóstico",
+        "logo (arte ASCII)",
       ],
       contactIntro: "La forma más rápida de hablar conmigo:",
       emailLabel: "Correo",
