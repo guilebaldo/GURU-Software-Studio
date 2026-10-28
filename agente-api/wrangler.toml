@@ -1,0 +1,7 @@
+name = "guru-agente-api"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# Uncomment for Workers AI instead of OPENAI_API_KEY:
+# [ai]
+# binding = "AI"
