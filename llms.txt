@@ -19,6 +19,9 @@
 ## Product definition
 Personal Software for Business is custom software for a specific operation — quoting, ops, clients, inventory, bookings, dashboards, or whatever workflow the business already runs manually. Typical first version ships in 4–8 weeks. The client owns the code, accounts, and data.
 
+## Platform API (optional)
+- Leads API (Vercel, `platform/` app): POST `/api/leads` when deployed — terminal command `lead email@…` on the home page when `data-leads-api` is configured.
+
 ## How engagement works
 1. Quick diagnostic: https://gurusoftware.studio/diagnostico/ (ES: https://gurusoftware.studio/es/diagnostico/)
 2. Short scope call and personal quote

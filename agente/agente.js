@@ -4,6 +4,7 @@
 
   const lang = root.dataset.lang === "es" ? "es" : "en";
   const apiUrl = (root.dataset.api || "").trim();
+  const leadsApi = (root.dataset.leadsApi || "").trim();
   const logEl = document.getElementById("agenteLog");
   const form = document.getElementById("agenteForm");
   const input = document.getElementById("agenteInput");
@@ -12,6 +13,7 @@
   const promptEl = document.getElementById("agentePromptLabel");
 
   const HANDLE_KEY = "guru-handle";
+  const SESSION_KEY = "guru-session-id";
   const BOT = "guru";
   const EMAIL = "hello@gurusoftware.studio";
   const WA = "522225772475";
@@ -47,6 +49,7 @@
         "contact / whatsapp / email",
         "diagnostic",
         "logo (ASCII art)",
+        "lead you@email.com",
       ],
       contactIntro: "Fastest way to reach me:",
       emailLabel: "Email",
@@ -55,6 +58,10 @@
       unknown:
         "I'm not sure on that one in local mode. For a deeper answer, connect the AI API — or write me on WhatsApp / email.",
       error: "Something went wrong. You can still reach me on WhatsApp or email.",
+      leadSaved: "Got it — I saved your details as a lead. I'll follow up soon.",
+      leadSkipped: "Share your email with: lead you@company.com (or use WhatsApp below).",
+      leadFailed: "Couldn't save right now — please use Email or WhatsApp.",
+      leadNeedContact: "Include an email or phone, e.g. lead alex@ops.com",
     },
     es: {
       boot: "guru.agent v0.2 — Personal Software for Business",
@@ -74,6 +81,7 @@
         "contacto / whatsapp / correo",
         "diagnóstico",
         "logo (arte ASCII)",
+        "lead tu@correo.com",
       ],
       contactIntro: "La forma más rápida de hablar conmigo:",
       emailLabel: "Correo",
@@ -82,6 +90,10 @@
       unknown:
         "En modo local no tengo una respuesta clara. Cuando conectemos la API de IA podremos profundizar — o escríbeme por WhatsApp / correo.",
       error: "Algo falló. Igual puedes escribirme por WhatsApp o correo.",
+      leadSaved: "Listo — guardé tus datos como lead. Te contacto pronto.",
+      leadSkipped: "Deja tu correo con: lead tu@empresa.com (o usa WhatsApp abajo).",
+      leadFailed: "No pude guardarlo ahorita — usa correo o WhatsApp.",
+      leadNeedContact: "Incluye correo o teléfono, ej. lead alex@ops.com",
     },
   };
 
@@ -115,6 +127,52 @@
 
   function waLink(text) {
     return `${WA_BASE}?text=${encodeURIComponent(text)}`;
+  }
+
+  function getSessionKey() {
+    try {
+      let id = localStorage.getItem(SESSION_KEY);
+      if (!id && typeof crypto !== "undefined" && crypto.randomUUID) {
+        id = crypto.randomUUID();
+        localStorage.setItem(SESSION_KEY, id);
+      }
+      return id || "anon";
+    } catch {
+      return "anon";
+    }
+  }
+
+  async function submitLead(payload) {
+    if (!leadsApi) return { ok: false, skipped: true };
+    try {
+      const res = await fetch(leadsApi, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lang,
+          source: "terminal",
+          sessionKey: getSessionKey(),
+          ...payload,
+        }),
+      });
+      return { ok: res.ok };
+    } catch {
+      return { ok: false };
+    }
+  }
+
+  function parseLeadInput(raw) {
+    const email = raw.match(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/)?.[0];
+    const phone = raw.match(/\+?\d[\d\s-]{8,}\d/)?.[0]?.replace(/\s+/g, " ");
+    const cleaned = raw.replace(/^lead\s+|^registro\s+/i, "").trim();
+    const name = cleaned && !cleaned.includes("@") && !/^\+?\d/.test(cleaned) ? cleaned.slice(0, 120) : undefined;
+    return {
+      email,
+      phone,
+      name: name && name.length > 1 ? name : readHandle() || undefined,
+      summary: cleaned.slice(0, 500) || undefined,
+      intent: "lead",
+    };
   }
 
   function appendLine(kind, label, text, actions) {
@@ -202,7 +260,11 @@
     }
 
     if (/contact|correo|email|whatsapp|wa|hablar|llamar|mensaje/.test(q)) {
-      return { text: t.contactIntro, actions: contactActions() };
+      const hint =
+        lang === "es"
+          ? "\n\nO guarda lead: lead tu@correo.com"
+          : "\n\nOr save a lead: lead you@email.com";
+      return { text: t.contactIntro + hint, actions: contactActions() };
     }
 
     if (/diagnostic|diagnostico|diagnóstico/.test(q)) {
@@ -314,6 +376,17 @@
     return reply || t.unknown;
   }
 
+  async function handleLeadCommand(raw) {
+    const payload = parseLeadInput(raw);
+    if (!payload.email && !payload.phone) {
+      return { text: t.leadNeedContact, actions: contactActions() };
+    }
+    const saved = await submitLead(payload);
+    if (saved.skipped) return { text: t.leadSkipped, actions: contactActions() };
+    if (saved.ok) return { text: t.leadSaved, actions: contactActions() };
+    return { text: t.leadFailed, actions: contactActions() };
+  }
+
   async function handleUser(text) {
     if (busy) return;
     busy = true;
@@ -324,7 +397,10 @@
 
     try {
       let result;
-      if (apiUrl) {
+      const q = normalize(text);
+      if (/^(lead|registro)\b/.test(q)) {
+        result = await handleLeadCommand(text);
+      } else if (apiUrl) {
         const reply = await askApi(text);
         result = { text: reply };
       } else {
