@@ -2073,19 +2073,19 @@ h1, h2, h3,
 }
 
 .matrix-rain--hero {
-  opacity: 0.24;
+  opacity: 0.28;
 }
 
 .matrix-rain--soft {
-  opacity: 0.14;
+  opacity: 0.17;
 }
 
 html[data-theme="light"] .matrix-rain--hero {
-  opacity: 0.18;
+  opacity: 0.22;
 }
 
 html[data-theme="light"] .matrix-rain--soft {
-  opacity: 0.1;
+  opacity: 0.14;
 }
 
 main,
