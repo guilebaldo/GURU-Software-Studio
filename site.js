@@ -215,36 +215,103 @@
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
-    const glyphs = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ01ABCDEF";
+
+    const glyphs = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const mobile = coarse || window.innerWidth < 720;
+    const fontSize = mobile ? 20 : 16;
+    const frameGap = mobile ? 50 : 38;
+    const dprCap = mobile ? 1.25 : 1.5;
+
     let width = 0;
     let height = 0;
-    let drops = [];
-    const fontSize = 16;
+    let cols = [];
+    let mouseX = -9999;
+    let palette = { fade: "rgba(0,0,0,0.16)", body: "#3dff7a", head: "#d8ffe4" };
+    let themeKey = "";
+
+    function readPalette() {
+      const theme = document.documentElement.getAttribute("data-theme") || "light";
+      if (theme === themeKey) return;
+      themeKey = theme;
+      const styles = getComputedStyle(document.documentElement);
+      palette = {
+        fade: styles.getPropertyValue("--rain-fade").trim() || "rgba(0,0,0,0.16)",
+        body: styles.getPropertyValue("--rain").trim() || "#3dff7a",
+        head: styles.getPropertyValue("--rain-head").trim() || "#d8ffe4",
+      };
+    }
 
     function resize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      const cols = Math.ceil(width / fontSize);
-      drops = Array.from({ length: cols }, () => Math.random() * -30);
+      const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const colCount = Math.ceil(width / fontSize);
+      cols = Array.from({ length: colCount }, () => ({
+        y: Math.random() * -40,
+        speed: 0.35 + Math.random() * 0.75,
+        glyph: glyphs[Math.floor(Math.random() * glyphs.length)],
+        tail: glyphs[Math.floor(Math.random() * glyphs.length)],
+      }));
     }
 
     resize();
     window.addEventListener("resize", resize, { passive: true });
 
+    if (!mobile) {
+      let moveAt = 0;
+      window.addEventListener(
+        "pointermove",
+        (event) => {
+          const now = performance.now();
+          if (now - moveAt < 48) return;
+          moveAt = now;
+          mouseX = event.clientX;
+        },
+        { passive: true },
+      );
+      window.addEventListener(
+        "pointerleave",
+        () => {
+          mouseX = -9999;
+        },
+        { passive: true },
+      );
+    }
+
     let last = 0;
     function frame(now) {
-      if (!document.hidden && now - last > 70) {
+      if (!document.hidden && now - last > frameGap) {
         last = now;
-        const styles = getComputedStyle(document.documentElement);
-        ctx.fillStyle = styles.getPropertyValue("--rain-fade").trim() || "rgba(0,0,0,0.16)";
+        readPalette();
+        ctx.fillStyle = palette.fade;
         ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = styles.getPropertyValue("--rain").trim() || "#3dff7a";
         ctx.font = `${fontSize}px "IBM Plex Mono", monospace`;
-        for (let i = 0; i < drops.length; i += 1) {
-          const ch = glyphs[Math.floor(Math.random() * glyphs.length)];
-          ctx.fillText(ch, i * fontSize, drops[i] * fontSize);
-          if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
-          drops[i] += 1;
+
+        for (let i = 0; i < cols.length; i += 1) {
+          const col = cols[i];
+          const x = i * fontSize;
+          const colCenter = x + fontSize * 0.5;
+          const nearMouse = Math.abs(colCenter - mouseX) < fontSize * 2.5;
+          const speed = col.speed * (nearMouse ? 1.35 : 1);
+
+          ctx.fillStyle = palette.body;
+          ctx.fillText(col.tail, x, (col.y - 1) * fontSize);
+          ctx.fillStyle = palette.head;
+          ctx.globalAlpha = nearMouse ? 0.95 : 0.82;
+          ctx.fillText(col.glyph, x, col.y * fontSize);
+          ctx.globalAlpha = 1;
+
+          col.glyph = glyphs[Math.floor(Math.random() * glyphs.length)];
+          if (Math.random() > 0.965) col.tail = col.glyph;
+
+          if (col.y * fontSize > height && Math.random() > 0.975) col.y = Math.random() * -20;
+          col.y += speed;
         }
       }
       requestAnimationFrame(frame);
@@ -254,9 +321,13 @@
 
   function initMatrixRain() {
     if (document.querySelector(".matrix-rain")) return;
-    if (!document.body.classList.contains("page-terminal")) return;
     const rain = document.createElement("canvas");
     rain.className = "matrix-rain";
+    if (document.body.classList.contains("page-terminal")) {
+      rain.classList.add("matrix-rain--hero");
+    } else {
+      rain.classList.add("matrix-rain--soft");
+    }
     rain.setAttribute("aria-hidden", "true");
     document.body.prepend(rain);
     initRain(rain);

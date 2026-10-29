@@ -152,6 +152,62 @@
   word-break: break-word;
 }
 
+.agente-line.is-new {
+  animation: agente-line-in 160ms ease-out;
+}
+
+@keyframes agente-line-in {
+  from {
+    opacity: 0.55;
+    transform: translateX(1px);
+    text-shadow: 1px 0 rgba(61, 255, 122, 0.25);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    text-shadow: none;
+  }
+}
+
+.agente-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.agente-type-cursor {
+  display: inline-block;
+  color: var(--accent);
+  margin-left: 1px;
+  animation: none;
+}
+
+.agente-type-cursor.is-idle {
+  animation: agente-cursor-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes agente-cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agente-line.is-new {
+    animation: none;
+  }
+
+  .agente-type-cursor.is-idle {
+    animation: none;
+  }
+}
+
 .agente-line--system {
   color: var(--muted);
   font-size: 0.78em;

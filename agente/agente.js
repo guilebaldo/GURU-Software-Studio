@@ -101,6 +101,22 @@
   const history = [];
   let knowledge = "";
   let busy = false;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function sleep(ms) {
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, ms);
+    });
+  }
+
+  function randBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  async function dramaticPause() {
+    if (reducedMotion) return;
+    await sleep(randBetween(420, 760));
+  }
 
   function readHandle() {
     try {
@@ -175,9 +191,34 @@
     };
   }
 
-  function appendLine(kind, label, text, actions) {
+  function appendActions(line, actions) {
+    if (!actions || !actions.length) return;
+    const row = document.createElement("div");
+    row.className = "agente-actions";
+    actions.forEach((a) => {
+      if (a.href) {
+        const link = document.createElement("a");
+        link.href = a.href;
+        link.textContent = a.label;
+        if (a.external) {
+          link.target = "_blank";
+          link.rel = "noopener";
+        }
+        row.appendChild(link);
+      } else if (typeof a.onClick === "function") {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = a.label;
+        btn.addEventListener("click", a.onClick);
+        row.appendChild(btn);
+      }
+    });
+    line.appendChild(row);
+  }
+
+  function appendLine(kind, label, text, actions, animate) {
     const line = document.createElement("div");
-    line.className = `agente-line agente-line--${kind}`;
+    line.className = `agente-line agente-line--${kind}${animate ? " is-new" : ""}`;
     if (kind === "ascii") {
       const pre = document.createElement("pre");
       pre.className = "agente-ascii";
@@ -197,32 +238,76 @@
       line.appendChild(head);
     }
 
-    if (actions && actions.length) {
-      const row = document.createElement("div");
-      row.className = "agente-actions";
-      actions.forEach((a) => {
-        if (a.href) {
-          const link = document.createElement("a");
-          link.href = a.href;
-          link.textContent = a.label;
-          if (a.external) {
-            link.target = "_blank";
-            link.rel = "noopener";
-          }
-          row.appendChild(link);
-        } else if (typeof a.onClick === "function") {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.textContent = a.label;
-          btn.addEventListener("click", a.onClick);
-          row.appendChild(btn);
-        }
-      });
-      line.appendChild(row);
-    }
-
+    appendActions(line, actions);
     logEl.appendChild(line);
     logEl.scrollTop = logEl.scrollHeight;
+    if (animate) {
+      window.setTimeout(() => line.classList.remove("is-new"), 180);
+    }
+  }
+
+  async function typeBotMessage(label, text, actions) {
+    const full = text || "";
+    if (reducedMotion || !full) {
+      appendLine("bot", label, full, actions, !reducedMotion);
+      return;
+    }
+
+    const line = document.createElement("div");
+    line.className = "agente-line agente-line--bot is-new";
+    const head = document.createElement("div");
+    const labelSpan = document.createElement("span");
+    labelSpan.className = "agente-label";
+    labelSpan.textContent = `${label} `;
+    head.appendChild(labelSpan);
+
+    const sr = document.createElement("span");
+    sr.className = "agente-sr";
+    sr.textContent = full;
+
+    const visible = document.createElement("span");
+    visible.className = "agente-typed";
+    visible.setAttribute("aria-hidden", "true");
+
+    const cursor = document.createElement("span");
+    cursor.className = "agente-type-cursor";
+    cursor.textContent = "▌";
+    cursor.setAttribute("aria-hidden", "true");
+
+    head.appendChild(sr);
+    head.appendChild(visible);
+    head.appendChild(cursor);
+    line.appendChild(head);
+    logEl.appendChild(line);
+
+    let skip = false;
+    const onSkip = (event) => {
+      if (event.key === "Enter" || event.key === "Escape") skip = true;
+    };
+    document.addEventListener("keydown", onSkip);
+
+    try {
+      let i = 0;
+      while (i < full.length && !skip) {
+        const ch = full[i];
+        visible.textContent += ch;
+        i += 1;
+        logEl.scrollTop = logEl.scrollHeight;
+
+        let delay = randBetween(12, 28);
+        if (/[.,?!—]/.test(ch)) delay += randBetween(90, 220);
+        if (ch === "\n") delay += randBetween(120, 280);
+        if (full.length > 280) delay *= 0.62;
+        await sleep(delay);
+      }
+      if (skip) visible.textContent = full;
+    } finally {
+      document.removeEventListener("keydown", onSkip);
+      cursor.classList.add("is-idle");
+      appendActions(line, actions);
+      window.setTimeout(() => line.classList.remove("is-new"), 180);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
   }
 
   function contactActions() {
@@ -391,30 +476,32 @@
     if (busy) return;
     busy = true;
     input.disabled = true;
-    appendLine("user", `${promptUser()}:~$`, text);
+    appendLine("user", `${promptUser()}:~$`, text, undefined, true);
 
-    appendLine("bot", `${BOT}:`, t.thinking);
+    appendLine("bot", `${BOT}:`, t.thinking, undefined, true);
 
     try {
       let result;
       const q = normalize(text);
-      if (/^(lead|registro)\b/.test(q)) {
-        result = await handleLeadCommand(text);
-      } else if (apiUrl) {
-        const reply = await askApi(text);
-        result = { text: reply };
-      } else {
-        result = localReply(text);
-      }
+      const work =
+        /^(lead|registro)\b/.test(q)
+          ? handleLeadCommand(text)
+          : apiUrl
+            ? askApi(text).then((reply) => ({ text: reply }))
+            : Promise.resolve(localReply(text));
+
+      const [, reply] = await Promise.all([dramaticPause(), work]);
+      result = reply;
+
       logEl.lastElementChild?.remove();
       if (result.text === ASCII_LOGO) {
         appendLine("ascii", "", ASCII_LOGO);
       } else {
-        appendLine("bot", `${BOT}:`, result.text, result.actions);
+        await typeBotMessage(`${BOT}:`, result.text, result.actions);
       }
     } catch {
       logEl.lastElementChild?.remove();
-      appendLine("bot", `${BOT}:`, t.error, contactActions());
+      await typeBotMessage(`${BOT}:`, t.error, contactActions());
     } finally {
       busy = false;
       input.disabled = false;
@@ -422,7 +509,7 @@
     }
   }
 
-  function boot() {
+  async function boot() {
     syncPrompt();
     if (input) {
       input.placeholder = t.placeholder;
@@ -442,7 +529,7 @@
     appendLine("system", "", `${ASCII_MARK}\nSoftware Studio · Puebla, MX`);
     appendLine("system", "", t.boot);
     const firstName = readHandle();
-    appendLine("bot", `${BOT}:`, t.greeting(firstName), contactActions());
+    await typeBotMessage(`${BOT}:`, t.greeting(firstName), contactActions());
   }
 
   form?.addEventListener("submit", (e) => {

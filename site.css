@@ -21,6 +21,7 @@
   --resume-hero-base: #e7f6ec;
   --rain: rgba(12, 90, 48, 0.45);
   --rain-fade: rgba(231, 246, 236, 0.28);
+  --rain-head: rgba(180, 255, 210, 0.92);
   --noise-opacity: 0.12;
   --font-display: "Share Tech Mono", ui-monospace, monospace;
   --font-brand: "Share Tech Mono", ui-monospace, monospace;
@@ -53,6 +54,7 @@ html[data-theme="dark"] {
   --resume-hero-base: #020805;
   --rain: rgba(61, 255, 122, 0.72);
   --rain-fade: rgba(2, 8, 5, 0.16);
+  --rain-head: rgba(230, 255, 238, 0.95);
   --noise-opacity: 0.08;
   color-scheme: dark;
 }
@@ -2068,6 +2070,22 @@ h1, h2, h3,
   height: 100%;
   z-index: 0;
   pointer-events: none;
+}
+
+.matrix-rain--hero {
+  opacity: 0.24;
+}
+
+.matrix-rain--soft {
+  opacity: 0.14;
+}
+
+html[data-theme="light"] .matrix-rain--hero {
+  opacity: 0.18;
+}
+
+html[data-theme="light"] .matrix-rain--soft {
+  opacity: 0.1;
 }
 
 main,
