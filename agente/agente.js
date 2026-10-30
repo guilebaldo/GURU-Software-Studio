@@ -227,20 +227,34 @@
     logEl?.classList.remove("agente-log--visitor-turn");
     formEl?.classList.remove("is-ready");
     input?.blur();
+    syncVisitorCaret();
+  }
+
+  function syncInputFieldWidth() {
+    if (!input) return;
+    const chars = Math.max(input.value.length, 1);
+    input.style.width = `${chars}ch`;
+    input.classList.toggle("has-text", input.value.length > 0);
   }
 
   function syncVisitorCaret() {
     if (!caretEl || !input) return;
     const visitor = logEl?.classList.contains("agente-log--visitor-turn");
     const empty = !input.value.length;
-    const focused = document.activeElement === input;
-    caretEl.hidden = !visitor || !empty || focused;
+    /* Block caret sits right after the prompt while empty; typed text uses the input caret. */
+    caretEl.hidden = !visitor || !empty;
+    if (visitor && empty) {
+      input.style.caretColor = "transparent";
+    } else if (visitor) {
+      input.style.caretColor = "";
+    }
   }
 
   function setVisitorTurn() {
     logEl?.classList.remove("agente-log--guru-turn");
     logEl?.classList.add("agente-log--visitor-turn");
     formEl?.classList.add("is-ready");
+    syncInputFieldWidth();
     syncVisitorCaret();
     if (input && !input.disabled) {
       input.focus({ preventScroll: true });
@@ -370,6 +384,7 @@
     } finally {
       document.removeEventListener("keydown", onSkip);
       cursor.remove();
+      line.classList.add("agente-line--done");
       appendActions(line, actions);
       window.setTimeout(() => line.classList.remove("is-new"), 180);
       scrollLog();
@@ -623,7 +638,10 @@
     input.addEventListener("blur", () => {
       syncVisitorCaret();
     });
-    input.addEventListener("input", syncVisitorCaret);
+    input.addEventListener("input", () => {
+      syncInputFieldWidth();
+      syncVisitorCaret();
+    });
   }
 
   if (logEl && input) {
@@ -634,10 +652,7 @@
     });
   }
 
-  if (caretEl && input) {
-    caretEl.hidden = false;
-  }
-
+  syncInputFieldWidth();
   logEl?.classList.add("agente-log--guru-turn");
   fetchKnowledge().then(boot);
 })();

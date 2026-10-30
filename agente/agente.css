@@ -293,6 +293,14 @@ html[data-theme="dark"] .agente-line--user .agente-label {
   cursor: text;
 }
 
+.agente-field {
+  display: inline-flex;
+  align-items: baseline;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .agente-prompt {
   flex-shrink: 0;
   font-family: var(--font-display);
@@ -310,9 +318,11 @@ html[data-theme="dark"] .agente-prompt {
 }
 
 .agente-input-line input {
-  flex: 1 1 10ch;
-  min-width: 6ch;
-  width: auto;
+  flex: 0 1 auto;
+  min-width: 0.25ch;
+  width: 0.25ch;
+  max-width: 100%;
+  field-sizing: content;
   border: none;
   background: transparent;
   font-family: inherit;
@@ -328,6 +338,11 @@ html[data-theme="dark"] .agente-prompt {
 .agente-log--visitor-turn .agente-input-line.is-ready input:focus {
   caret-color: var(--accent);
   caret-shape: block;
+}
+
+.agente-log--visitor-turn .agente-input-line.is-ready input:focus:not(:placeholder-shown),
+.agente-log--visitor-turn .agente-input-line.is-ready input.has-text {
+  caret-color: var(--accent);
 }
 
 .agente-log--guru-turn .agente-input-line {
