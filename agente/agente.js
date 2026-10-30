@@ -11,6 +11,8 @@
   const statusDot = document.getElementById("agenteStatusDot");
   const statusLabel = document.getElementById("agenteStatusLabel");
   const promptEl = document.getElementById("agentePromptLabel");
+  const caretEl = document.getElementById("agenteCaret");
+  const formEl = document.getElementById("agenteForm");
 
   const HANDLE_KEY = "guru-handle";
   const SESSION_KEY = "guru-session-id";
@@ -220,6 +222,32 @@
     logEl.scrollTop = logEl.scrollHeight;
   }
 
+  function setGuruTurn() {
+    logEl?.classList.add("agente-log--guru-turn");
+    logEl?.classList.remove("agente-log--visitor-turn");
+    formEl?.classList.remove("is-ready");
+    input?.blur();
+  }
+
+  function syncVisitorCaret() {
+    if (!caretEl || !input) return;
+    const visitor = logEl?.classList.contains("agente-log--visitor-turn");
+    const empty = !input.value.length;
+    const focused = document.activeElement === input;
+    caretEl.hidden = !visitor || !empty || focused;
+  }
+
+  function setVisitorTurn() {
+    logEl?.classList.remove("agente-log--guru-turn");
+    logEl?.classList.add("agente-log--visitor-turn");
+    formEl?.classList.add("is-ready");
+    syncVisitorCaret();
+    if (input && !input.disabled) {
+      input.focus({ preventScroll: true });
+    }
+    scrollLog();
+  }
+
   function appendToLog(node) {
     const form = document.getElementById("agenteForm");
     if (form && logEl.contains(form)) {
@@ -309,8 +337,8 @@
 
     const cursor = document.createElement("span");
     cursor.className = "agente-type-cursor";
-    cursor.textContent = "▌";
     cursor.setAttribute("aria-hidden", "true");
+    setGuruTurn();
 
     head.appendChild(sr);
     head.appendChild(visible);
@@ -341,7 +369,7 @@
       if (skip) visible.textContent = full;
     } finally {
       document.removeEventListener("keydown", onSkip);
-      cursor.classList.add("is-idle");
+      cursor.remove();
       appendActions(line, actions);
       window.setTimeout(() => line.classList.remove("is-new"), 180);
       scrollLog();
@@ -517,6 +545,7 @@
     appendLine("user", `${promptUser()}:~$`, text, undefined, true);
     logChat("user", text);
 
+    setGuruTurn();
     appendLine("bot", `${BOT}:`, t.thinking, undefined, true);
 
     try {
@@ -547,11 +576,12 @@
     } finally {
       busy = false;
       input.disabled = false;
-      input.focus();
+      setVisitorTurn();
     }
   }
 
   async function boot() {
+    setGuruTurn();
     syncPrompt();
     if (input) {
       input.placeholder = "";
@@ -573,6 +603,7 @@
     const firstName = readHandle();
     await typeBotMessage(`${BOT}:`, t.greeting(firstName), contactActions());
     logChat("assistant", t.greeting(firstName));
+    setVisitorTurn();
   }
 
   form?.addEventListener("submit", (e) => {
@@ -584,17 +615,29 @@
   });
 
   if (input) {
-    input.addEventListener("focus", scrollLog);
+    input.addEventListener("focus", () => {
+      scrollLog();
+      formEl?.classList.add("is-ready");
+      syncVisitorCaret();
+    });
+    input.addEventListener("blur", () => {
+      syncVisitorCaret();
+    });
+    input.addEventListener("input", syncVisitorCaret);
   }
 
   if (logEl && input) {
     logEl.addEventListener("click", (event) => {
       if (event.target.closest("a, button")) return;
+      if (logEl.classList.contains("agente-log--guru-turn")) return;
       input.focus({ preventScroll: true });
     });
   }
 
-  fetchKnowledge().then(boot).then(() => {
-    input?.focus({ preventScroll: true });
-  });
+  if (caretEl && input) {
+    caretEl.hidden = false;
+  }
+
+  logEl?.classList.add("agente-log--guru-turn");
+  fetchKnowledge().then(boot);
 })();
