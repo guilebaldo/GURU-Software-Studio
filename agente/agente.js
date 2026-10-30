@@ -324,6 +324,7 @@
     if (animate) {
       window.setTimeout(() => line.classList.remove("is-new"), 180);
     }
+    return line;
   }
 
   async function typeBotMessage(label, text, actions) {
@@ -384,7 +385,6 @@
     } finally {
       document.removeEventListener("keydown", onSkip);
       cursor.remove();
-      line.classList.add("agente-line--done");
       appendActions(line, actions);
       window.setTimeout(() => line.classList.remove("is-new"), 180);
       scrollLog();
@@ -561,7 +561,7 @@
     logChat("user", text);
 
     setGuruTurn();
-    appendLine("bot", `${BOT}:`, t.thinking, undefined, true);
+    const thinkingLine = appendLine("bot", `${BOT}:`, t.thinking, undefined, true);
 
     try {
       let result;
@@ -576,7 +576,7 @@
       const [, reply] = await Promise.all([dramaticPause(), work]);
       result = reply;
 
-      logEl.lastElementChild?.remove();
+      thinkingLine?.remove();
       if (result.text === ASCII_LOGO) {
         appendLine("ascii", "", ASCII_LOGO);
         logChat("assistant", ASCII_LOGO);
@@ -585,7 +585,7 @@
         logChat("assistant", result.text);
       }
     } catch {
-      logEl.lastElementChild?.remove();
+      thinkingLine?.remove();
       await typeBotMessage(`${BOT}:`, t.error, contactActions());
       logChat("assistant", t.error);
     } finally {
@@ -626,6 +626,8 @@
     const text = input.value.trim();
     if (!text) return;
     input.value = "";
+    syncInputFieldWidth();
+    syncVisitorCaret();
     handleUser(text);
   });
 
