@@ -145,6 +145,31 @@
     return `${WA_BASE}?text=${encodeURIComponent(text)}`;
   }
 
+  function chatApiUrl() {
+    if (!leadsApi) return "";
+    return leadsApi.replace(/\/api\/leads\/?$/i, "/api/chat");
+  }
+
+  function logChat(role, content) {
+    const url = chatApiUrl();
+    if (!url || !content) return;
+    try {
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionKey: getSessionKey(),
+          lang,
+          role,
+          content: String(content).slice(0, 4000),
+        }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {
+      /* ignore */
+    }
+  }
+
   function getSessionKey() {
     try {
       let id = localStorage.getItem(SESSION_KEY);
@@ -477,6 +502,7 @@
     busy = true;
     input.disabled = true;
     appendLine("user", `${promptUser()}:~$`, text, undefined, true);
+    logChat("user", text);
 
     appendLine("bot", `${BOT}:`, t.thinking, undefined, true);
 
@@ -496,12 +522,15 @@
       logEl.lastElementChild?.remove();
       if (result.text === ASCII_LOGO) {
         appendLine("ascii", "", ASCII_LOGO);
+        logChat("assistant", ASCII_LOGO);
       } else {
         await typeBotMessage(`${BOT}:`, result.text, result.actions);
+        logChat("assistant", result.text);
       }
     } catch {
       logEl.lastElementChild?.remove();
       await typeBotMessage(`${BOT}:`, t.error, contactActions());
+      logChat("assistant", t.error);
     } finally {
       busy = false;
       input.disabled = false;
@@ -530,6 +559,7 @@
     appendLine("system", "", t.boot);
     const firstName = readHandle();
     await typeBotMessage(`${BOT}:`, t.greeting(firstName), contactActions());
+    logChat("assistant", t.greeting(firstName));
   }
 
   form?.addEventListener("submit", (e) => {

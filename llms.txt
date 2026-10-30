@@ -20,7 +20,7 @@
 Personal Software for Business is custom software for a specific operation — quoting, ops, clients, inventory, bookings, dashboards, or whatever workflow the business already runs manually. Typical first version ships in 4–8 weeks. The client owns the code, accounts, and data.
 
 ## Platform API (optional)
-- Leads API (Vercel, `platform/` app): POST `/api/leads` when deployed — terminal command `lead email@…` on the home page when `data-leads-api` is configured.
+- Platform API (Vercel `guru-platform`): POST `/api/leads` (terminal `lead email@…`), POST `/api/chat` (session message log). Home sets `data-leads-api`.
 
 ## How engagement works
 1. Quick diagnostic: https://gurusoftware.studio/diagnostico/ (ES: https://gurusoftware.studio/es/diagnostico/)

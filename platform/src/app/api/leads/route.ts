@@ -3,7 +3,8 @@ import { desc } from "drizzle-orm";
 import { corsHeaders, preflight } from "@/lib/cors";
 import { getDb } from "@/lib/db";
 import { createLeadSchema } from "@/lib/leads";
-import { chatSessions, leads } from "@/lib/schema";
+import { upsertChatSession } from "@/lib/session";
+import { leads } from "@/lib/schema";
 
 export async function OPTIONS(request: Request) {
   return preflight(request) ?? new Response(null, { status: 204 });
@@ -51,22 +52,7 @@ export async function POST(request: Request) {
 
     if (data.sessionKey) {
       const ua = request.headers.get("User-Agent") ?? undefined;
-      await db
-        .insert(chatSessions)
-        .values({
-          sessionKey: data.sessionKey,
-          leadId: lead.id,
-          lang: data.lang,
-          userAgent: ua,
-        })
-        .onConflictDoUpdate({
-          target: chatSessions.sessionKey,
-          set: {
-            leadId: lead.id,
-            lastSeenAt: new Date(),
-            lang: data.lang,
-          },
-        });
+      await upsertChatSession(db, data.sessionKey, data.lang, ua, lead.id);
     }
 
     return Response.json({ ok: true, lead }, { status: 201, headers });

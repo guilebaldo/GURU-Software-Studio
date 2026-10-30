@@ -10,6 +10,12 @@ export default function Home() {
         <li>
           <code>POST /api/leads</code> — create lead from the public terminal
         </li>
+        <li>
+          <code>POST /api/chat</code> — append message to session log
+        </li>
+        <li>
+          <a href="/leads">/leads</a> — internal leads table (Bearer token)
+        </li>
       </ul>
       <p style={{ marginTop: "1.5rem", opacity: 0.75 }}>
         Marketing site stays on GitHub Pages; deploy this app on Vercel with root directory{" "}

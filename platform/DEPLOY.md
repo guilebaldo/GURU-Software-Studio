@@ -7,6 +7,8 @@
 | **Git** | `guilebaldo/GURU-Software-Studio` · root `platform/` · branch `main` |
 | **Health** | https://guru-platform-seven.vercel.app/api/health |
 | **Leads API** | `POST https://guru-platform-seven.vercel.app/api/leads` |
+| **Chat log** | `POST https://guru-platform-seven.vercel.app/api/chat` |
+| **Leads UI** | https://guru-platform-seven.vercel.app/leads |
 
 ## Environment (Vercel dashboard)
 
