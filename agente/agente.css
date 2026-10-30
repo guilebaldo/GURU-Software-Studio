@@ -138,7 +138,8 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 14px 12px 6px;
+  padding: 14px 12px max(10px, env(safe-area-inset-bottom, 0px));
+  cursor: text;
   font-size: clamp(0.8125rem, 2.8vw, 0.9rem);
   line-height: 1.6;
   min-height: 0;
@@ -263,45 +264,59 @@ html[data-theme="dark"] .agente-line--user .agente-label {
   border-color: var(--accent);
 }
 
-.agente-input-row {
+/* Active command line — inline in the scrollback like a real shell */
+.agente-input-line {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding:
-    10px 12px
-    max(10px, env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid var(--line);
-  background: color-mix(in srgb, var(--deep) 92%, transparent);
-  color: var(--white);
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em;
+  margin: 0 0 6px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: text;
 }
 
 .agente-prompt {
   flex-shrink: 0;
   font-family: var(--font-display);
-  font-size: 0.72rem;
-  color: var(--accent);
+  font-size: 0.8rem;
+  color: var(--accent-dark);
   white-space: nowrap;
 }
 
-.agente-input-row input {
-  flex: 1;
+html[data-theme="dark"] .agente-prompt {
+  color: var(--accent);
+}
+
+.agente-input-line .agente-label {
+  font-weight: 500;
+}
+
+.agente-input-line input {
+  flex: 1 1 10ch;
+  min-width: 6ch;
   border: none;
   background: transparent;
   font-family: inherit;
   font-size: max(16px, 0.875rem);
+  line-height: inherit;
   color: inherit;
   outline: none;
-  min-width: 0;
+  padding: 0;
+  margin: 0;
   caret-color: var(--accent);
 }
 
-.agente-input-row input:disabled {
-  opacity: 0.5;
+.agente-input-line input:disabled {
+  opacity: 0.55;
 }
 
-.agente-input-row input::placeholder {
-  color: color-mix(in srgb, var(--white) 45%, transparent);
+.agente-input-line input::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
 }
 
 .agente-hint {
@@ -358,6 +373,10 @@ html[data-theme="dark"] .agente-line--user .agente-label {
   .agente-top {
     font-size: 0.62rem;
   }
+
+  .agente-prompt {
+    font-size: 0.72rem;
+  }
 }
 
 @media (display-mode: standalone) {
@@ -394,18 +413,6 @@ html[data-theme="dark"] .agente-line--user .agente-label {
   min-height: 280px;
 }
 
-.agente-page:not(.page-terminal) .agente-input-row {
-  background: var(--surface);
-  color: inherit;
-}
-
-.agente-page:not(.page-terminal) .agente-prompt {
-  color: var(--accent-dark);
-}
-
-html[data-theme="dark"] .agente-page:not(.page-terminal) .agente-prompt {
-  color: var(--accent);
-}
 
 .agente-page:not(.page-terminal) .site-nav {
   position: fixed;

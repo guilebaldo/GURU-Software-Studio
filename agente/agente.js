@@ -216,6 +216,20 @@
     };
   }
 
+  function scrollLog() {
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function appendToLog(node) {
+    const form = document.getElementById("agenteForm");
+    if (form && logEl.contains(form)) {
+      logEl.insertBefore(node, form);
+    } else {
+      logEl.appendChild(node);
+    }
+    scrollLog();
+  }
+
   function appendActions(line, actions) {
     if (!actions || !actions.length) return;
     const row = document.createElement("div");
@@ -264,8 +278,7 @@
     }
 
     appendActions(line, actions);
-    logEl.appendChild(line);
-    logEl.scrollTop = logEl.scrollHeight;
+    appendToLog(line);
     if (animate) {
       window.setTimeout(() => line.classList.remove("is-new"), 180);
     }
@@ -303,7 +316,7 @@
     head.appendChild(visible);
     head.appendChild(cursor);
     line.appendChild(head);
-    logEl.appendChild(line);
+    appendToLog(line);
 
     let skip = false;
     const onSkip = (event) => {
@@ -331,7 +344,7 @@
       cursor.classList.add("is-idle");
       appendActions(line, actions);
       window.setTimeout(() => line.classList.remove("is-new"), 180);
-      logEl.scrollTop = logEl.scrollHeight;
+      scrollLog();
     }
   }
 
@@ -541,7 +554,7 @@
   async function boot() {
     syncPrompt();
     if (input) {
-      input.placeholder = t.placeholder;
+      input.placeholder = "";
     }
 
     if (statusDot && statusLabel) {
@@ -571,12 +584,17 @@
   });
 
   if (input) {
-    input.addEventListener("focus", () => {
-      if (window.visualViewport) {
-        logEl.scrollTop = logEl.scrollHeight;
-      }
+    input.addEventListener("focus", scrollLog);
+  }
+
+  if (logEl && input) {
+    logEl.addEventListener("click", (event) => {
+      if (event.target.closest("a, button")) return;
+      input.focus({ preventScroll: true });
     });
   }
 
-  fetchKnowledge().then(boot);
+  fetchKnowledge().then(boot).then(() => {
+    input?.focus({ preventScroll: true });
+  });
 })();
